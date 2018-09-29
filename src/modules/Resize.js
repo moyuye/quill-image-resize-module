@@ -48,6 +48,7 @@ export class Resize extends BaseModule {
 
         // listen for mousedown on each box
         box.addEventListener('mousedown', this.handleMousedown, false);
+         box.addEventListener('touchstart', this.handleMousedown, false);
         // add drag handle to document
         this.overlay.appendChild(box);
         // keep track of drag handle
@@ -55,6 +56,10 @@ export class Resize extends BaseModule {
     };
 
     handleMousedown = (evt) => {
+        
+        if(event.touches){
+            evt = event.touches[0];
+        }
         // note which box
         this.dragBox = evt.target;
         // note starting mousedown position
@@ -66,6 +71,8 @@ export class Resize extends BaseModule {
         // listen for movement and mouseup
         document.addEventListener('mousemove', this.handleDrag, false);
         document.addEventListener('mouseup', this.handleMouseup, false);
+         document.addEventListener('touchmove', this.handleDrag, false);
+         document.addEventListener('touchend', this.handleMouseup, false);
     };
 
     handleMouseup = () => {
@@ -74,12 +81,17 @@ export class Resize extends BaseModule {
         // stop listening for movement and mouseup
         document.removeEventListener('mousemove', this.handleDrag);
         document.removeEventListener('mouseup', this.handleMouseup);
+         document.removeEventListener('touchmove', this.handleDrag);
+         document.removeEventListener('touchend', this.handleMouseup);
     };
 
     handleDrag = (evt) => {
         if (!this.img) {
             // image not set yet
             return;
+        }
+        if(event.touches){
+            evt = event.touches[0];
         }
         // update image size
         const deltaX = evt.clientX - this.dragStartX;
